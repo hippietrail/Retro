@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../../.."
+		},
+		{
+			"path": "../../../../../../ghidra-repo/ghidra/Ghidra/Features/FileFormats/src/main/java/ghidra/file/formats"
+		}
+	],
+	"settings": {}
+}
