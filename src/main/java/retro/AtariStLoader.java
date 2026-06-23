@@ -25,11 +25,10 @@ import ghidra.app.util.bin.ByteProvider;
 import ghidra.app.util.importer.MessageLog;
 import ghidra.app.util.opinion.AbstractProgramWrapperLoader;
 import ghidra.app.util.opinion.LoadSpec;
-import ghidra.app.util.opinion.QueryOpinionService;
-import ghidra.app.util.opinion.QueryResult;
 import ghidra.program.database.mem.FileBytes;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressSpace;
+import ghidra.program.model.lang.LanguageCompilerSpecPair;
 import ghidra.program.model.listing.Program;
 import ghidra.program.model.mem.Memory;
 import ghidra.program.model.symbol.SourceType;
@@ -87,9 +86,7 @@ public class AtariStLoader extends AbstractProgramWrapperLoader {
         if (reader.readUnsignedInt(ST_OFF_RESRV) != 0) return loadSpecs;
         if ((reader.readUnsignedInt(ST_OFF_FLAGS) & ~0b00000000_00110111) != 0) return loadSpecs;
 
-        // 68020 etc are treated as 'variants'
-        List<QueryResult> queryResults = QueryOpinionService.query(getName(), "68000", null);
-        queryResults.stream().map(result -> new LoadSpec(this, 0, result)).forEach(loadSpecs::add);
+        loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:default", "default"), true));
 
         return loadSpecs;
     }
