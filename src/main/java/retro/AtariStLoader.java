@@ -86,7 +86,12 @@ public class AtariStLoader extends AbstractProgramWrapperLoader {
         if (reader.readUnsignedInt(ST_OFF_RESRV) != 0) return loadSpecs;
         if ((reader.readUnsignedInt(ST_OFF_FLAGS) & ~0b00000000_00110111) != 0) return loadSpecs;
 
+        // real ST hardware (and accelerator cards, and later machines like the TT/Falcon030) could have
+        // a 68020 or 68030 in place of the standard 68000, so offer those as alternatives - but not the
+        // Coldfire variant, which no ST ever had
         loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:default", "default"), true));
+        loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:MC68020", "default"), false));
+        loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:MC68030", "default"), false));
 
         return loadSpecs;
     }
