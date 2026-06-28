@@ -114,8 +114,15 @@ public class Trs80Model100RlcLoader extends AbstractProgramWrapperLoader {
     }
 
     @Override
-    public void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options,
-            Program program, TaskMonitor monitor, MessageLog log) throws CancelledException, IOException {
+    protected void load(Program program, ImporterSettings settings)
+            throws CancelledException, IOException {
+
+        ByteProvider provider = settings.provider();
+        LoadSpec loadSpec = settings.loadSpec();
+        List<Option> options = settings.options();
+        TaskMonitor monitor = settings.monitor();
+        MessageLog log = settings.log();
+
 
         int loadAddress = OptionUtils.getOption(RLC_START_OPTION_NAME, options, RLC_DEFAULT_START_OPTION);
 
@@ -218,9 +225,9 @@ public class Trs80Model100RlcLoader extends AbstractProgramWrapperLoader {
 
     @Override
     public List<Option> getDefaultOptions(ByteProvider provider, LoadSpec loadSpec,
-            DomainObject domainObject, boolean isLoadIntoProgram) {
+            DomainObject domainObject, boolean isLoadIntoProgram, boolean mirrorFsLayout) {
         List<Option> list =
-            super.getDefaultOptions(provider, loadSpec, domainObject, isLoadIntoProgram);
+            super.getDefaultOptions(provider, loadSpec, domainObject, isLoadIntoProgram, mirrorFsLayout);
 
         // start is the load address, not the entry point
         list.add(new Option(RLC_START_OPTION_NAME, RLC_DEFAULT_START_OPTION));

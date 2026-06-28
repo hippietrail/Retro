@@ -24,8 +24,7 @@ import ghidra.app.util.bin.ByteProvider;
 import ghidra.app.util.importer.MessageLog;
 import ghidra.app.util.opinion.AbstractProgramWrapperLoader;
 import ghidra.app.util.opinion.LoadSpec;
-import ghidra.app.util.opinion.QueryOpinionService;
-import ghidra.app.util.opinion.QueryResult;
+import ghidra.program.model.lang.LanguageCompilerSpecPair;
 import ghidra.program.model.listing.Program;
 import ghidra.util.exception.CancelledException;
 import ghidra.util.task.TaskMonitor;
@@ -56,16 +55,21 @@ public class X68KZLoader extends AbstractProgramWrapperLoader {
         int magic2 = reader.readUnsignedShort(0x1a);
         if (magic2 != XZ_MAGIC_2) return loadSpecs;
 
-        List<QueryResult> queryResults = QueryOpinionService.query(getName(), "68000", null);
-        queryResults.stream().map(result -> new LoadSpec(this, 0, result)).forEach(loadSpecs::add);
+        loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:default", "default"), true));
 
         return loadSpecs;
     }
 
     @Override
-    protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options,
-            Program program, TaskMonitor monitor, MessageLog log)
+    protected void load(Program program, ImporterSettings settings)
             throws CancelledException, IOException {
+
+        ByteProvider provider = settings.provider();
+        LoadSpec loadSpec = settings.loadSpec();
+        List<Option> options = settings.options();
+        TaskMonitor monitor = settings.monitor();
+        MessageLog log = settings.log();
+
 
         // TODO: Load the bytes from 'provider' into the 'program'.
     }

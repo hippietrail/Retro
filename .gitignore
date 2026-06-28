@@ -4,6 +4,7 @@ bin/
 .gradle/
 .vscode/settings.json
 dist/
+build/
 .settings/
 .classpath
 .project

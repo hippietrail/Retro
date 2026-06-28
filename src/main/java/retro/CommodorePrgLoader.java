@@ -114,9 +114,15 @@ public class CommodorePrgLoader extends AbstractProgramWrapperLoader {
     }
 
     @Override
-    protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options,
-            Program program, TaskMonitor monitor, MessageLog log)
+    protected void load(Program program, ImporterSettings settings)
             throws CancelledException, IOException {
+
+        ByteProvider provider = settings.provider();
+        LoadSpec loadSpec = settings.loadSpec();
+        List<Option> options = settings.options();
+        TaskMonitor monitor = settings.monitor();
+        MessageLog log = settings.log();
+
 
         try {
             Address loadAddress = program.getAddressFactory().getDefaultAddressSpace().getAddress(load);

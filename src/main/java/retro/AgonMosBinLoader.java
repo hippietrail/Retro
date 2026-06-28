@@ -69,9 +69,15 @@ public class AgonMosBinLoader extends AbstractProgramWrapperLoader {
     }
 
     @Override
-    protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options,
-            Program program, TaskMonitor monitor, MessageLog log)
+    protected void load(Program program, ImporterSettings settings)
             throws CancelledException, IOException {
+
+        ByteProvider provider = settings.provider();
+        LoadSpec loadSpec = settings.loadSpec();
+        List<Option> options = settings.options();
+        TaskMonitor monitor = settings.monitor();
+        MessageLog log = settings.log();
+
 
         // TODO Load the bytes from 'provider' into the 'program'.
         // TODO MOS programs are always loaded at 0x40000 but it uses an eZ80, which Ghidra doesn't support

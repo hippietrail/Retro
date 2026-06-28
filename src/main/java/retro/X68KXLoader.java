@@ -25,8 +25,6 @@ import ghidra.app.util.bin.ByteProvider;
 import ghidra.app.util.importer.MessageLog;
 import ghidra.app.util.opinion.AbstractProgramWrapperLoader;
 import ghidra.app.util.opinion.LoadSpec;
-import ghidra.app.util.opinion.QueryOpinionService;
-import ghidra.app.util.opinion.QueryResult;
 import ghidra.program.database.mem.FileBytes;
 import ghidra.program.model.address.Address;
 import ghidra.program.model.address.AddressSpace;
@@ -34,6 +32,7 @@ import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.data.ByteDataType;
 import ghidra.program.model.data.StringDataType;
 import ghidra.program.model.data.UnsignedIntegerDataType;
+import ghidra.program.model.lang.LanguageCompilerSpecPair;
 import ghidra.program.model.listing.CodeUnit;
 import ghidra.program.model.listing.Listing;
 import ghidra.program.model.listing.Program;
@@ -85,16 +84,21 @@ public class X68KXLoader extends AbstractProgramWrapperLoader {
         long magic = reader.readUnsignedInt(0);
         if (magic != XX_MAGIC_NORMAL && magic != XX_MAGIC_SMALLEST && magic != XX_MAGIC_HIGH) return loadSpecs; 
 
-        List<QueryResult> queryResults = QueryOpinionService.query(getName(), "68000", null);
-        queryResults.stream().map(result -> new LoadSpec(this, 0, result)).forEach(loadSpecs::add);
+        loadSpecs.add(new LoadSpec(this, 0, new LanguageCompilerSpecPair("68000:BE:32:default", "default"), true));
 
         return loadSpecs;
     }
 
     @Override
-    protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options,
-            Program program, TaskMonitor monitor, MessageLog log)
+    protected void load(Program program, ImporterSettings settings)
             throws CancelledException, IOException {
+
+        ByteProvider provider = settings.provider();
+        LoadSpec loadSpec = settings.loadSpec();
+        List<Option> options = settings.options();
+        TaskMonitor monitor = settings.monitor();
+        MessageLog log = settings.log();
+
 
         Memory memory = program.getMemory();
         FileBytes fileBytes = MemoryBlockUtils.createFileBytes(program, provider, monitor);
